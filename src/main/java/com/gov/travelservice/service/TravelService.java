@@ -20,6 +20,7 @@ import com.gov.travelservice.entity.TravelRecord;
 import com.gov.travelservice.entity.User;
 import com.gov.travelservice.pojo.TravelRecordBO;
 import com.gov.travelservice.repository.TravelRecordRepository;
+import com.gov.travelservice.repository.UserRepository;
 
 @Service
 @Transactional(readOnly=true)
@@ -27,6 +28,9 @@ public class TravelService {
 
 	@Autowired
 	TravelRecordRepository travelRecordRepository;
+
+	@Autowired
+	UserService userService;
 	
 	public Map<String,Map<String, Object>> getTravelServiceList(long userId,int page,int limit) {
 		User userreq = new User();
@@ -46,9 +50,6 @@ public class TravelService {
 		
 		Page<TravelRecord> approverApprovedTravelRequests = travelRecordRepository.findByApproverAndStatus(userreq, "Pending", PageRequest.of(page, limit));
 		addToMap(approverApprovedTravelRequests,resMap,"approverApprovedTravelRequests");
-		
-		//Page<TravelRecord> allNotifications = travelRecordRepository.findAllCommentsByRequester(userreq);
-		//addToMap(approverApprovedTravelRequests,resMap,"approverApprovedTravelRequests");
 		
 		return resMap;
 	}
@@ -71,11 +72,11 @@ public class TravelService {
 
 	
 	public TravelRecordBO create(TravelRecordBO travelRecordBO) {
-//		User userreq = new User();
-//		userreq.setId(userId);
-		//TravelRecord tr = travelRecordRepository.saveAndFlush(getEntityFromTravelRecordBO(travelRecordBO));
-		//return getBOFromTravelRecord(tr);
-		return  null;
+		TravelRecord tr = getEntityFromTravelRecordBO(travelRecordBO);
+		tr.setId(0);
+		tr.setRequester(userService.findByUserId(travelRecordBO.getRequester().getId()));
+		tr.setApprover(userService.findByUserId(travelRecordBO.getApprover().getId()));
+		return getBOFromTravelRecord(travelRecordRepository.saveAndFlush(tr));
 	}
 	
 	private static TravelRecordBO getBOFromTravelRecord(TravelRecord entity) throws IllegalArgumentException {

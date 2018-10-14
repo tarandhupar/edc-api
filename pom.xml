@@ -13,17 +13,11 @@
     </parent>
     
   <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.platform.version>1.2.0</junit.platform.version>
-		<junit.jupiter.version>5.2.0</junit.jupiter.version>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <java.version>1.8</java.version>
-      <!-- Destination for JaCoCo report output -->
-      <!-- <jacoco.maven.plugin.version>0.7.5.201505241946</jacoco.maven.plugin.version>
-      <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.execution.data.file>
-      <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>  --> 
 	</properties>
 
 	<dependencies>
@@ -131,29 +125,6 @@
 					<artifactId>spring-boot-maven-plugin</artifactId>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<!-- Sets the VM argument line used when unit tests are run. -->
-						<argLine>${surefireArgLine}</argLine>
-						<skipTests>false</skipTests>
-						<!-- Excludes integration tests when unit tests are run. -->
-					</configuration>
-					<version>2.22.0</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.junit.platform</groupId>
-							<artifactId>junit-platform-surefire-provider</artifactId>
-							<version>${junit.platform.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>${junit.jupiter.version}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.0</version>
@@ -189,8 +160,6 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
             <properties>
-               <!-- <sonar.host.url>http://ec2-54-149-127-21.us-west-2.compute.amazonaws.com:9000/</sonar.host.url>
-                <sonar.login>c1a0d2b1358f2233833cd210fec75f5dfd1363b9</sonar.login> -->
                 <sonar.host.url>http://ec2-52-41-106-59.us-west-2.compute.amazonaws.com:9000/</sonar.host.url>
 				<sonar.login>a7c6e853409fe05804ec5634742c2e970436bcb5</sonar.login>
 				<sonar.language>java</sonar.language>
@@ -201,7 +170,6 @@
 				<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 				<sonar.jacoco.reportPath>${project.build.directory}/target/jacoco.exec</sonar.jacoco.reportPath>
 			</properties>
-
 		</profile>
 	</profiles>
 </project>

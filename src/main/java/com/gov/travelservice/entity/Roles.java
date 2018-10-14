@@ -1,4 +1,4 @@
-package com.gov.travelservice.pojo;
+package com.gov.travelservice.entity;
 
 import java.io.Serializable;
 
@@ -9,34 +9,37 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity(name="roles")
+@Entity
 @Table(name="roles",schema="ts")
+@NamedQuery(name="Roles.findAll", query="SELECT r FROM Roles r")
 public class Roles implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public Roles() {
+	}
+	
 	@Id
 	@Column(name="role_id")
+	@JsonIgnore
 	private long id;
 	
 	@Column(name="role_name")
+	@JsonProperty("roleName")
 	private String roleName;
 	
-	/*@OneToOne
-    @JoinColumn(name="role_id", insertable=false,updatable=false)
-	@JsonBackReference
-	private UserRoles role;*/
+	public Roles(String name) {
+		this.roleName = name;
+	}
 	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="role_id", insertable=false,updatable=false)
-	@JsonBackReference
-	private UserRoles roles;
-
 	public long getId() {
 		return id;
 	}
@@ -45,12 +48,12 @@ public class Roles implements Serializable {
 		this.id = id;
 	}
 
-	public UserRoles getRoles() {
-		return roles;
+	public String getRoleName() {
+		return roleName;
 	}
 
-	public void setRoles(UserRoles roles) {
-		this.roles = roles;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 

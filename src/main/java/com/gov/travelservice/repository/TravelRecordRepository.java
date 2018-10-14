@@ -31,7 +31,4 @@ public interface TravelRecordRepository extends JpaRepository<TravelRecord, Long
 	@OrderBy("date_from ASC")
 	Page<TravelRecord> findByApproverAndStatus(User userreq, String string, Pageable pageable);
 	
-	
-	//Page<String> findAllCommentsByRequester(User userreq,Pageable pageable);
-	
 }

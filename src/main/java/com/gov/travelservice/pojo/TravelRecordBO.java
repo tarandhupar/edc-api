@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gov.travelservice.entity.User;
 
 public class TravelRecordBO implements Serializable {
@@ -18,8 +19,10 @@ public class TravelRecordBO implements Serializable {
 
 	private long id;
 
+//	@JsonBackReference(value="requester")
 	private User requester;
 
+//	@JsonBackReference(value="approver")
 	private User approver;
 
 	private String status;

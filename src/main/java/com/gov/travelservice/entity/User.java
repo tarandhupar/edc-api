@@ -4,22 +4,35 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Where;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-@Entity(name="user")
+@Entity
 @Table(name="user",schema="ts")
+/*
+@NamedEntityGraph(name = "user.roles", attributeNodes = {
+		@NamedAttributeNode("userRoles")
+	}
+)
+*/
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public User() {
+		
+	}
+	
+	public User(long id) {
+		this.id = id;
+	}
+
 	@Id
 	@Column(name="id")
 	private long id;
@@ -34,6 +47,7 @@ public class User implements Serializable {
 	private String username;
 	
 	@Column(name="password")
+	@JsonIgnore
 	private String password;
 	
 	@Column(name="supervisor")
@@ -50,26 +64,10 @@ public class User implements Serializable {
 	
 	@Column(name="modified_by")
 	private String modified_by;
-	
-//	@OneToMany(mappedBy="requester")
-//	@JsonManagedReference
-//	private List<TravelRecord> travelRecordsRequesterList;
-		
-	@OneToMany(mappedBy="approver")
-	//@JsonManagedReference
-	@Where(clause="status='Pending'")
-	private List<TravelRecord> approverPendingTravelRequests;
-	
-	@OneToMany(mappedBy="approver")
-	//@JsonManagedReference
-	@Where(clause="status='Approved'")
-	private List<TravelRecord> approverApprovedTravelRequests;
-	
-//	@OneToMany(mappedBy="user")
-//	@JsonManagedReference
-//	private List<UserRoles> userRoles;
-	
-	
+
+	//bi-directional many-to-one association to UserRole
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id.user", orphanRemoval = true)
+	private List<UserRoles> userRoles;
 	
 	public long getId() {
 		return id;
@@ -149,5 +147,13 @@ public class User implements Serializable {
 
 	public void setModified_date(Date modified_date) {
 		this.modified_date = modified_date;
+	}
+
+	public List<UserRoles> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(List<UserRoles> userRoles) {
+		this.userRoles = userRoles;
 	}
 }
