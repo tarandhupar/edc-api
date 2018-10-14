@@ -92,4 +92,24 @@
         </pluginManagement>
         <finalName>ROOT</finalName>
     </build>
+     <profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+            <properties>
+                <sonar.host.url>http://ec2-52-41-106-59.us-west-2.compute.amazonaws.com:9000/</sonar.host.url>
+                <sonar.login>a7c6e853409fe05804ec5634742c2e970436bcb5</sonar.login>
+                <sonar.language>java</sonar.language>
+                <sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
+                <sonar.sources>src/main/java</sonar.sources>
+                <sonar.tests>src/test/java</sonar.tests>
+                <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+                <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+                <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+            </properties>
+
+	</profile>
+</profiles>    
 </project>
