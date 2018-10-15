@@ -1,7 +1,8 @@
 package com.gov.travelservice.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
-
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gov.travelservice.entity.Notifications;
 import com.gov.travelservice.entity.TravelRecord;
 import com.gov.travelservice.entity.User;
 import com.gov.travelservice.pojo.TravelRecordBO;
@@ -32,6 +34,9 @@ public class TravelService {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	NotificationsService notificationService;
+
 	public Map<String,Map<String, Object>> getTravelServiceList(long userId,int page,int limit) {
 		User userreq = new User();
 		userreq.setId(userId);
@@ -66,17 +71,69 @@ public class TravelService {
 		return resMap;
 	}
 	
-	public Optional<TravelRecord> getTravelServiceById(long travelRecordId) {
-		return travelRecordRepository.findById(travelRecordId);
+	public TravelRecordBO getTravelServiceById(long travelRecordId) {
+		return getBOFromTravelRecord(travelRecordRepository.findById(travelRecordId).get());
 	}
 
+    public TravelRecordBO update(TravelRecordBO travelRecordBO) {
+        TravelRecord tr = getEntityFromTravelRecordBO(travelRecordBO);
+        tr.setRequester(userService.findByUserId(travelRecordBO.getRequester().getId()));
+        User newApprover = userService.findByUserId(travelRecordBO.getApprover().getId());
+        tr.setApprover(userService.findByUserId(travelRecordBO.getApprover().getId()));
+        TravelRecord existing = travelRecordRepository.getOne(tr.getId());
+        List<Notifications> list = new ArrayList<>();
+        if(!existing.getStatus().equalsIgnoreCase(tr.getStatus())) {
+        	Notifications n = new Notifications();
+        	n.setForUser(existing.getRequester());
+        	n.setNotificationText("Status of your travel request [" + existing.getTravelLocationFrom()
+        	+ " to " + existing.getTravelLocationTo() + " ; " + existing.getTravelDateFrom()
+        	+ " - " + existing.getTravelDateTo() + " ] has changed from " + existing.getStatus() + " to "
+        	+ tr.getStatus());
+        	n.setCreatedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	n.setModifiedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	list.add(n);
+        }
+        if(!existing.getApprover().equals(newApprover)) {
+        	Notifications n = new Notifications();
+        	n.setForUser(existing.getApprover());
+        	n.setNotificationText("You are no longer an approver for request from " + existing.getRequester().getFirst_name() 
+        			+ " " + existing.getRequester().getLast_name() + " [ " 
+        			+ existing.getTravelLocationFrom() + " to " + existing.getTravelLocationTo() + " ; " 
+        			+ existing.getTravelDateFrom() + " - " + existing.getTravelDateTo() + " ] ");
+        	n.setCreatedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	n.setModifiedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	list.add(n);
+
+        	Notifications n1 = new Notifications();
+        	n1.setForUser(newApprover);
+        	n1.setNotificationText("You are now an approver for request from " + existing.getRequester().getFirst_name() 
+        			+ " " + existing.getRequester().getLast_name() + " [ " 
+        			+ existing.getTravelLocationFrom() + " to " + existing.getTravelLocationTo() + " ; " 
+        			+ existing.getTravelDateFrom() + " - " + existing.getTravelDateTo() + " ] ");
+        	n1.setCreatedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	n1.setModifiedDate(new Date(Calendar.getInstance().getTime().getTime()));
+        	list.add(n1);
+        }
+        TravelRecord updated = travelRecordRepository.saveAndFlush(tr);
+        list.forEach(n -> notificationService.create(n));
+        return getBOFromTravelRecord(updated);
+    }
 	
 	public TravelRecordBO create(TravelRecordBO travelRecordBO) {
 		TravelRecord tr = getEntityFromTravelRecordBO(travelRecordBO);
 		tr.setId(0);
-		tr.setRequester(userService.findByUserId(travelRecordBO.getRequester().getId()));
+		User requester = userService.findByUserId(travelRecordBO.getRequester().getId());
+		tr.setRequester(requester);
 		tr.setApprover(userService.findByUserId(travelRecordBO.getApprover().getId()));
-		return getBOFromTravelRecord(travelRecordRepository.saveAndFlush(tr));
+    	Notifications n = new Notifications();
+    	n.setForUser(tr.getApprover());
+    	n.setNotificationText(requester.getFirst_name() + " " + requester.getLast_name() 
+    	+ " has created a travel request to be approved by you.");
+    	n.setCreatedDate(new Date(Calendar.getInstance().getTime().getTime()));
+    	n.setModifiedDate(new Date(Calendar.getInstance().getTime().getTime()));
+    	TravelRecord updated = travelRecordRepository.saveAndFlush(tr);
+    	notificationService.create(n);
+		return getBOFromTravelRecord(updated);
 	}
 	
 	private static TravelRecordBO getBOFromTravelRecord(TravelRecord entity) throws IllegalArgumentException {

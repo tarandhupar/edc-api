@@ -2,8 +2,9 @@ package com.gov.travelservice.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
-import javax.annotation.Generated;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,11 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Transient;
 
 
 /**
@@ -73,10 +73,11 @@ public class TravelRecord  implements Serializable {
 	
 	@Column(name="perDiem")
 	private Double perDiem;
-	
-	@Column(name="comments")
-	private String comments;
-	
+
+	//bi-directional many-to-one association to Notifications
+	@OneToMany(mappedBy = "id")
+	private List<Comments> comments;
+
 	@Column(name="created_date")
 	private Date createdDate;
 	
@@ -124,14 +125,6 @@ public class TravelRecord  implements Serializable {
 
 	public void setTravelLocationTo(String travelLocationTo) {
 		this.travelLocationTo = travelLocationTo;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
 	}
 
 	public Date getCreatedDate() {
@@ -220,5 +213,13 @@ public class TravelRecord  implements Serializable {
 
 	public void setPerDiem(Double per_diem) {
 		this.perDiem = per_diem;
+	}
+	
+	public List<Comments> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comments> comments) {
+		this.comments = comments;
 	}
 }

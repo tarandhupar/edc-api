@@ -3,6 +3,7 @@ package com.gov.travelservice.entity;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -14,13 +15,13 @@ public class UserRolesPK implements Serializable {
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne
-	@JoinColumn(name = "uid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uid", insertable=false, updatable=false)
 	@JsonIgnore
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", insertable=false, updatable=false)
 	private Roles role;
 
 	public UserRolesPK() {
@@ -72,6 +73,4 @@ public class UserRolesPK implements Serializable {
 			return false;
 		return true;
 	}
-
-
 }

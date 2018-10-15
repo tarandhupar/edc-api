@@ -2,15 +2,10 @@ package com.gov.travelservice.pojo;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gov.travelservice.entity.Comments;
 import com.gov.travelservice.entity.User;
 
 public class TravelRecordBO implements Serializable {
@@ -20,9 +15,11 @@ public class TravelRecordBO implements Serializable {
 	private long id;
 
 //	@JsonBackReference(value="requester")
+	@JsonIgnoreProperties({"userRoles", "first_name", "last_name", "supervisor", "email", "created_date", "modified_date", "modified_by"})
 	private User requester;
 
 //	@JsonBackReference(value="approver")
+	@JsonIgnoreProperties({"userRoles", "first_name", "last_name", "supervisor", "email", "created_date", "modified_date", "modified_by"})
 	private User approver;
 
 	private String status;
@@ -45,7 +42,7 @@ public class TravelRecordBO implements Serializable {
 
 	private Double perDiem;
 
-	private String comments;
+	private List<Comments> comments;
 
 	private Date createdDate;
 
@@ -93,14 +90,14 @@ public class TravelRecordBO implements Serializable {
 		this.travelLocationTo = travelLocationTo;
 	}
 
-	public String getComments() {
+	public List<Comments> getComments() {
 		return comments;
 	}
 
-	public void setComments(String comments) {
+	public void setComments(List<Comments> comments) {
 		this.comments = comments;
 	}
-
+	
 	public Date getCreatedDate() {
 		return createdDate;
 	}

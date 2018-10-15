@@ -21,7 +21,7 @@ public class TravelServiceTest {
 	
 	@Ignore
 	public void testGetTravelRecordById() {
-		System.out.println(travelService.getTravelServiceById(1).get().getRequester().getFirst_name());
+		System.out.println(travelService.getTravelServiceById(1).getRequester().getFirst_name());
 	}
 
 	@Ignore

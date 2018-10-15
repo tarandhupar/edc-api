@@ -15,12 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="user",schema="ts")
-/*
-@NamedEntityGraph(name = "user.roles", attributeNodes = {
-		@NamedAttributeNode("userRoles")
-	}
-)
-*/
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
