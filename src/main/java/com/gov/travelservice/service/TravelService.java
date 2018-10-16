@@ -119,6 +119,11 @@ public class TravelService {
         return getBOFromTravelRecord(updated);
     }
 	
+    /**
+     * 
+     * @param travelRecordBO
+     * @return
+     */
 	public TravelRecordBO create(TravelRecordBO travelRecordBO) {
 		TravelRecord tr = getEntityFromTravelRecordBO(travelRecordBO);
 		tr.setId(0);
