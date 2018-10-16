@@ -1,15 +1,20 @@
 package com.gov.travelservice.entity;
 
 import java.io.Serializable;
+
 import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,6 +33,8 @@ public class User implements Serializable {
 	}
 
 	@Id
+	@SequenceGenerator(name = "USER_GENERATOR", sequenceName = "TS.USER_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_GENERATOR")
 	@Column(name="id")
 	private long id;
 	
@@ -58,6 +65,12 @@ public class User implements Serializable {
 	
 	@Column(name="modified_by")
 	private String modified_by;
+	
+	@Column(name="groupid")
+	private int groupId;
+	
+	@Transient
+	private int tRoleId;
 
 	//bi-directional many-to-one association to UserRole
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "id.user", orphanRemoval = true)
@@ -150,4 +163,22 @@ public class User implements Serializable {
 	public void setUserRoles(List<UserRoles> userRoles) {
 		this.userRoles = userRoles;
 	}
+
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
+	public int gettRoleId() {
+		return tRoleId;
+	}
+
+	public void settRoleId(int tRoleId) {
+		this.tRoleId = tRoleId;
+	}
+
+	
 }

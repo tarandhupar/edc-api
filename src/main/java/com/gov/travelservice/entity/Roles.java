@@ -29,7 +29,6 @@ public class Roles implements Serializable {
 	
 	@Id
 	@Column(name="role_id")
-	@JsonIgnore
 	private long id;
 	
 	@Column(name="role_name")
